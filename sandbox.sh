@@ -584,6 +584,7 @@ BWRAP_ARGS=(
   --ro-bind-try "$HOME/.config/nix" "$HOME/.config/nix"
   --ro-bind-try "$HOME/.config/git" "$HOME/.config/git"
   --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig"
+  --ro-bind-try "$HOME/.config/gh" "$HOME/.config/gh"
   --bind-try "$HOME/.cargo" "$HOME/.cargo"
   --ro-bind-try "$HOME/.local/share/fonts" "$HOME/.local/share/fonts"
   "${SSH_BINDS[@]}"

@@ -64,6 +64,7 @@
         git
         gitui
         curl
+        gh
         wl-clipboard
         uv
         (python3.withPackages (ps: [ ps.pyyaml ]))
