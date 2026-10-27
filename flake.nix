@@ -26,6 +26,9 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
+        # claude-code is unfree; allow only that package instead of everything.
+        config.allowUnfreePredicate =
+          pkg: builtins.elem (nixpkgs.lib.getName pkg) [ "claude-code" ];
       };
 
       # opencode2 with the startup/CLI logo blanked out.
@@ -67,6 +70,7 @@
         gh
         wl-clipboard
         uv
+        claude-code
         (python3.withPackages (ps: [ ps.pyyaml ]))
       ];
 
