@@ -117,6 +117,17 @@ if [ "$NO_SANDBOX" != true ]; then
   mkdir -p "$HOME/.local/share/opencode"
   mkdir -p "$HOME/.local/state/opencode"
   mkdir -p "$HOME/.cache/opencode"
+  mkdir -p "$HOME/.claude"
+
+  # Claude Code keeps settings, credentials and .claude.json under
+  # CLAUDE_CONFIG_DIR. Point it at the host ~/.claude so auth, settings,
+  # trust decisions and transcripts survive restarts. A pre-existing
+  # ~/.claude.json is imported once, because relocating the config dir makes
+  # Claude look for it inside ~/.claude instead of the home directory.
+  if [ -f "$HOME/.claude.json" ] && [ ! -f "$HOME/.claude/.claude.json" ]; then
+    cp -f "$HOME/.claude.json" "$HOME/.claude/.claude.json"
+    chmod 600 "$HOME/.claude/.claude.json"
+  fi
 fi
 
 # Temp files cleanup
@@ -579,6 +590,8 @@ BWRAP_ARGS=(
   --bind "$OPCODE_STATE_TMPDIR" "$HOME/.local/state/opencode"
   --bind "$OPCODE_CFG_TMPDIR" "$HOME/.config/opencode"
   --bind-try "$HOME/.opencode" "$HOME/.opencode"
+  --bind-try "$HOME/.claude" "$HOME/.claude"
+  --bind-try "$HOME/.config/anthropic" "$HOME/.config/anthropic"
   --tmpfs "$HOME/.config/tuicr"
   --ro-bind-try "${TUICR_CONFIG:-$SCRIPT_DIR/default/tuicr/config.toml}" "$HOME/.config/tuicr/config.toml"
   --ro-bind-try "$HOME/.config/nix" "$HOME/.config/nix"
@@ -596,6 +609,7 @@ BWRAP_ARGS=(
   --setenv HERDR_CONFIG_PATH "$HOME/.config/herdr/config.toml"
   --setenv TMPDIR /tmp
   --setenv OPENCODE_CONFIG_DIR "$HOME/.config/opencode"
+  --setenv CLAUDE_CONFIG_DIR "$HOME/.claude"
   --setenv NODE_TLS_REJECT_UNAUTHORIZED 0
   --setenv CARGO_NET_OFFLINE false
   --setenv SSL_CERT_FILE /etc/ssl/certs/ca-certificates.crt
